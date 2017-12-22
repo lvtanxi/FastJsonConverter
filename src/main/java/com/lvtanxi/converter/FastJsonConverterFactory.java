@@ -14,77 +14,86 @@ import okhttp3.ResponseBody;
 import retrofit2.Converter;
 import retrofit2.Retrofit;
 
-
+/**
+ * Date: 2017-12-22
+ * Time: 16:20
+ * Description:
+ */
 public class FastJsonConverterFactory extends Converter.Factory {
 
-  private ParserConfig mParserConfig = ParserConfig.getGlobalInstance();
-  private int featureValues = JSON.DEFAULT_PARSER_FEATURE;
-  private Feature[] features;
+    private ParserConfig mParserConfig = ParserConfig.getGlobalInstance();
+    private int featureValues = JSON.DEFAULT_PARSER_FEATURE;
+    private Feature[] features;
 
-  private SerializeConfig serializeConfig;
-  private SerializerFeature[] serializerFeatures;
+    private SerializeConfig serializeConfig;
+    private SerializerFeature[] serializerFeatures;
 
-  public static FastJsonConverterFactory create() {
-    return new FastJsonConverterFactory();
-  }
+    public static FastJsonConverterFactory create() {
+        return new FastJsonConverterFactory();
+    }
 
-  private FastJsonConverterFactory() {
-  }
+    private FastJsonConverterFactory() {
+    }
 
-  @Override
-  public Converter<ResponseBody, ?> responseBodyConverter(Type type, Annotation[] annotations,
-                                                          Retrofit retrofit) {
-    return new FastJsonResponseBodyConverter<>(type, mParserConfig, featureValues, features);
-  }
+    @Override
+    public Converter<ResponseBody, ?> responseBodyConverter(Type type, Annotation[] annotations, Retrofit retrofit) {
+        boolean isBasicsType = false;// 默认"data"
+        for (Annotation annotation : annotations) {
+            if (annotation instanceof BasicsType) {
+                isBasicsType = ((BasicsType) annotation).value();
+                break;
+            }
+        }
+        return new FastJsonResponseBodyConverter<>(type, mParserConfig, featureValues, isBasicsType, features);
+    }
 
-  @Override
-  public Converter<?, RequestBody> requestBodyConverter(Type type,
-         Annotation[] parameterAnnotations, Annotation[] methodAnnotations, Retrofit retrofit) {
-    return new FastJsonRequestBodyConverter<>(serializeConfig, serializerFeatures);
-  }
+    @Override
+    public Converter<?, RequestBody> requestBodyConverter(Type type, Annotation[] parameterAnnotations, Annotation[] methodAnnotations, Retrofit retrofit) {
+        return new FastJsonRequestBodyConverter<>(serializeConfig, serializerFeatures);
+    }
 
-  public ParserConfig getParserConfig() {
-    return mParserConfig;
-  }
+    public ParserConfig getParserConfig() {
+        return mParserConfig;
+    }
 
-  public FastJsonConverterFactory setParserConfig(ParserConfig config) {
-    this.mParserConfig = config;
-    return this;
-  }
+    public FastJsonConverterFactory setParserConfig(ParserConfig config) {
+        this.mParserConfig = config;
+        return this;
+    }
 
-  public int getParserFeatureValues() {
-    return featureValues;
-  }
+    public int getParserFeatureValues() {
+        return featureValues;
+    }
 
-  public FastJsonConverterFactory setParserFeatureValues(int featureValues) {
-    this.featureValues = featureValues;
-    return this;
-  }
+    public FastJsonConverterFactory setParserFeatureValues(int featureValues) {
+        this.featureValues = featureValues;
+        return this;
+    }
 
-  public Feature[] getParserFeatures() {
-    return features;
-  }
+    public Feature[] getParserFeatures() {
+        return features;
+    }
 
-  public FastJsonConverterFactory setParserFeatures(Feature[] features) {
-    this.features = features;
-    return this;
-  }
+    public FastJsonConverterFactory setParserFeatures(Feature[] features) {
+        this.features = features;
+        return this;
+    }
 
-  public SerializeConfig getSerializeConfig() {
-    return serializeConfig;
-  }
+    public SerializeConfig getSerializeConfig() {
+        return serializeConfig;
+    }
 
-  public FastJsonConverterFactory setSerializeConfig(SerializeConfig serializeConfig) {
-    this.serializeConfig = serializeConfig;
-    return this;
-  }
+    public FastJsonConverterFactory setSerializeConfig(SerializeConfig serializeConfig) {
+        this.serializeConfig = serializeConfig;
+        return this;
+    }
 
-  public SerializerFeature[] getSerializerFeatures() {
-    return serializerFeatures;
-  }
+    public SerializerFeature[] getSerializerFeatures() {
+        return serializerFeatures;
+    }
 
-  public FastJsonConverterFactory setSerializerFeatures(SerializerFeature[] features) {
-    this.serializerFeatures = features;
-    return this;
-  }
+    public FastJsonConverterFactory setSerializerFeatures(SerializerFeature[] features) {
+        this.serializerFeatures = features;
+        return this;
+    }
 }
