@@ -1,0 +1,24 @@
+version '1.0.0-SNAPSHOT'
+group='com.github.lvtanxi'
+
+buildscript {
+    repositories {
+        maven { url "http://maven.aliyun.com/nexus/content/groups/public/" }
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.github.dcendents:android-maven-gradle-plugin:1.5'
+    }
+}
+apply plugin: 'java'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile 'com.alibaba:fastjson:1.1.67.android'
+    compile 'com.squareup.retrofit2:retrofit:2.3.0'
+}
