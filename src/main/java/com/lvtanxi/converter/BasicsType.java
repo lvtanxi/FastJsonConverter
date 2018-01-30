@@ -8,5 +8,5 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface BasicsType {//基础
-    boolean value() default true;
+    Class value() default String.class;
 }

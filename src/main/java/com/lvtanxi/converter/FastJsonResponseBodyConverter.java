@@ -6,7 +6,6 @@ import com.alibaba.fastjson.parser.ParserConfig;
 
 import java.io.IOException;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Collection;
 
@@ -27,14 +26,14 @@ final class FastJsonResponseBodyConverter<T> implements Converter<ResponseBody, 
     private ParserConfig config;
     private int featureValues;
     private Feature[] features;
-    private boolean isBasicsType;
+    private Class<?> mBasicsType;
 
-    FastJsonResponseBodyConverter(Type type, ParserConfig config, int featureValues, boolean isBasicsType, Feature... features) {
+    FastJsonResponseBodyConverter(Type type, ParserConfig config, int featureValues, Class<?> basicsType, Feature... features) {
         mType = type;
         this.config = config;
         this.featureValues = featureValues;
         this.features = features;
-        this.isBasicsType = isBasicsType;
+        this.mBasicsType = basicsType;
     }
 
     @Override
@@ -45,8 +44,8 @@ final class FastJsonResponseBodyConverter<T> implements Converter<ResponseBody, 
             String body = responseBody.string();
             if (isEmptyBody(body))
                 return null;
-            
-            if (isBasicsType)
+
+            if (mBasicsType !=null)
                 return (T) obtainValue(body);
 
             return JSON.parseObject(body, mType, config, featureValues, features != null ? features : EMPTY_SERIALIZER_FEATURES);
@@ -64,7 +63,7 @@ final class FastJsonResponseBodyConverter<T> implements Converter<ResponseBody, 
 
     private Object obtainValue(String body) {
         try {
-            Constructor<?> constructor = obtainClass().getConstructor(String.class);
+            Constructor<?> constructor = mBasicsType.getConstructor(String.class);
             return constructor.newInstance(body);
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
@@ -72,9 +71,6 @@ final class FastJsonResponseBodyConverter<T> implements Converter<ResponseBody, 
     }
 
 
-    private Class<?> obtainClass() {//获取
-        return (Class) ((ParameterizedType) mType).getRawType();
-    }
 
     private boolean isCoolection(Class<?> clzaa) {
         if (clzaa == null)
