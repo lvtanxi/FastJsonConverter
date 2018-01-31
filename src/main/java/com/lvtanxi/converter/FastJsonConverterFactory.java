@@ -37,7 +37,7 @@ public class FastJsonConverterFactory extends Converter.Factory {
 
     @Override
     public Converter<ResponseBody, ?> responseBodyConverter(Type type, Annotation[] annotations, Retrofit retrofit) {
-        Class<?> basicsType = String.class;// 默认"data"
+        Class<?> basicsType = null;// 默认"data"
         for (Annotation annotation : annotations) {
             if (annotation instanceof BasicsType) {
                 basicsType = ((BasicsType) annotation).value();
